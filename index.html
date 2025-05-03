@@ -93,7 +93,22 @@
 
       <div class="row mb-3">
         <div class="col-md-6">
-          <h3>JSON Input</h3>
+          <div class="d-flex justify-content-between">
+            <h3>JSON Input</h3>
+
+            <div class="form-check form-switch my-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="splitObjectsToggle"
+              />
+              <label class="form-check-label" for="splitObjectsToggle"
+                >Split Nested Objects</label
+              >
+            </div>
+          </div>
+
           <div class="editor-container">
             <div class="editor-buttons">
               <button id="clearJsonBtn" class="btn btn-sm btn-secondary">
