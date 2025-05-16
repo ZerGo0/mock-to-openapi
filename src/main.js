@@ -7,12 +7,32 @@ document.addEventListener("DOMContentLoaded", () => {
 	const convertBtn = document.getElementById("convertBtn");
 	const copyYamlBtn = document.getElementById("copyYamlBtn");
 	const clearJsonBtn = document.getElementById("clearJsonBtn");
+	const splitObjectsToggle = document.getElementById("splitObjectsToggle");
 
 	function convertJsonToOpenApi() {
 		try {
 			const jsonObj = JSON.parse(jsonInput.value);
-			const schema = toOpenApi(jsonObj);
-			yamlOutput.value = YAML.stringify(schema);
+			const shouldSplitObjects = splitObjectsToggle.checked;
+			const collectedSchemas = {};
+
+			const mainSchema = toOpenApi(jsonObj, shouldSplitObjects, "", collectedSchemas);
+
+			const openApiDoc = {
+				openapi: "3.0.0",
+				info: {
+					title: "Generated API",
+					version: "1.0.0",
+				},
+				paths: {},
+				components: {
+					schemas: {
+						RootObject: mainSchema,
+						...collectedSchemas,
+					},
+				},
+			};
+
+			yamlOutput.value = YAML.stringify(openApiDoc);
 		} catch (error) {
 			yamlOutput.value = `Error: ${error.message}`;
 		}
@@ -22,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	convertBtn.addEventListener("click", convertJsonToOpenApi);
 
-	jsonInput.addEventListener("paste", convertJsonToOpenApi);
+	splitObjectsToggle.addEventListener("change", convertJsonToOpenApi);
 
 	copyYamlBtn.addEventListener("click", async () => {
 		try {
